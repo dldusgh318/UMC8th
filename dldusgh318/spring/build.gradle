@@ -2,7 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.4'
 	id 'io.spring.dependency-management' version '1.1.7'
-	//id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'umc'
@@ -32,7 +32,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.hibernate.orm:hibernate-core:6.0.2.Final'  // Hibernate 6.0.2 이상
+	//implementation 'org.hibernate.orm:hibernate-core:6.0.2.Final'  // Hibernate 6.0.2 이상
 
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
@@ -61,6 +61,11 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE'
+
+	//jwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 }
 
 tasks.named('test') {
@@ -69,29 +74,26 @@ tasks.named('test') {
 
 def generated = 'src/main/generated'
 
-//querydsl {
-//	jpa = true
-//	querydslSourcesDir = generated
-//}
+querydsl {
+	jpa = true
+	querydslSourcesDir = generated
+}
 
 sourceSets {
 	main.java.srcDirs += [ generated ]
 }
 
-//compileQuerydsl{
-//	options.annotationProcessorPath = configurations.querydsl
-//}
+compileQuerydsl{
+	options.annotationProcessorPath = configurations.querydsl
+}
 
 clean {
 	delete file(generated)
 }
 
-//configurations {
-//	compileOnly {
-//		extendsFrom annotationProcessor
-//	}
-//	querydsl.extendsFrom compileClasspath
-//}
+configurations {
+	querydsl.extendsFrom compileClasspath
+}
 
 tasks.withType(JavaCompile) {
 	options.compilerArgs << "-parameters"
