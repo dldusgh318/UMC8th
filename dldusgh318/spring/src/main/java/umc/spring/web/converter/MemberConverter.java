@@ -16,21 +16,14 @@ public class MemberConverter {
                 .build();
     }
 
-    public static Member toMember(MemberRequestDTO.JoinDTO request){
+    public static Member toMember(MemberRequestDTO.JoinDTO request, String encodedPassword) {
 
-        Gender gender = null;
-
-        switch (request.getGender()){
-            case 1:
-                gender = Gender.MALE;
-                break;
-            case 2:
-                gender = Gender.FEMALE;
-                break;
-            case 3:
-                gender = Gender.NONE;
-                break;
-        }
+        Gender gender = switch (request.getGender()) {
+            case 1 -> Gender.MALE;
+            case 2 -> Gender.FEMALE;
+            case 3 -> Gender.NONE;
+            default -> null;
+        };
 
         return Member.builder()
                 .address(request.getAddress())
@@ -38,6 +31,9 @@ public class MemberConverter {
                 .gender(gender)
                 .name(request.getName())
                 .memberPreferList(new ArrayList<>())
+                .email(request.getEmail())
+                .password(encodedPassword)
+                .role(request.getRole())
                 .build();
     }
 }
